@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Group Rocket - Plataforma de Consultas y Servicios Oficiales</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        rocket: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            dark: '#0f172a',
+                            card: '#1e293b'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="h-full bg-slate-950 text-slate-100 antialiased selection:bg-green-500 selection:text-white overflow-x-hidden">
+
+    <div id="app" class="min-h-full flex flex-col xl:flex-row">
+        
+        <!-- Sidebar Navigation / Menu with all services -->
+        <aside id="sidebar" class="w-full xl:w-80 bg-slate-900 border-r border-slate-800 flex flex-col justify-between shrink-0 transition-all duration-300">
+            <!-- Top brand & navigation items -->
+            <div class="p-6">
+                <!-- Brand Logo -->
+                <div class="flex items-center justify-between mb-8">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-green-600 to-emerald-400 flex items-center justify-center shadow-lg shadow-green-900/40">
+                            <i class="fa-solid fa-rocket text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <span class="text-xl font-bold tracking-tight text-white block leading-none">Group Rocket</span>
+                            <span class="text-[10px] text-green-400 font-medium tracking-wider uppercase">Plataforma Oficial</span>
+                        </div>
+                    </div>
+                    <button onclick="toggleSidebarMobile()" class="xl:hidden text-slate-400 hover:text-white p-2">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+
+                <!-- Navigation Links List -->
+                <nav class="space-y-6 max-h-[calc(100vh-220px)] overflow-y-auto pr-1">
+                    
+                    <!-- Sección Principal -->
+                    <div>
+                        <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-3 px-3">Principal</p>
+                        <div class="space-y-1">
+                            <a href="#" onclick="switchView('login')" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl bg-green-500/10 text-green-400 text-sm font-semibold transition-colors">
+                                <i class="fa-solid fa-house w-5 text-center"></i>
+                                <span>Inicio / Login</span>
+                            </a>
+                            <a href="#" onclick="openServiceModal('Panel de Estadísticas', 'Visualiza el resumen de tus consultas mensuales y créditos disponibles.')" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 text-sm font-medium transition-colors">
+                                <i class="fa-solid fa-chart-pie w-5 text-center"></i>
+                                <span>Panel General</span>
+                            </a>
+                            <a href="#" onclick="openServiceModal('Recarga de Créditos', 'Paquetes disponibles para consultas ilimitadas a través de Yape, Plin y Transferencia Bancaria.')" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800/60 text-sm font-medium transition-colors">
+                                <i class="fa-solid fa-wallet w-5 text-center"></i>
+                                <span>Recargas y Saldo</span>
+                                <span class="ml-auto text-[10px] bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full font-bold">Activo</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Módulo RENIEC e Identidad -->
+                    <div>
+                        <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-3 px-3">Módulo RENIEC & Identidad</p>
+                        <div class="space-y-1">
+                            <a href="#" onclick="openServiceModal('Ficha RENIEC', 'Consulta completa de datos personales, fotografía, firma y dirección exacta.')" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/60 text-sm font-medium transition-colors">
+                                <i class="fa-solid fa-id-card w-5 text-center text-red-400"></i>
+                                <span>Ficha RENIEC</span>
+                            </a>
+                            <a href="#" onclick="openServiceModal('Búsqueda por Nombres', 'Encuentra números de DNI ingresando nombres y apellidos completos.')" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/60 text-sm font-medium transition-colors">
+                                <i class="fa-solid fa-magnifying-glass-user w-5 text-center text-red-400"></i>
+                                <span>Búsqueda por Nombres</span>
+                            </a>
+                            <a href="#" onclick="openServiceModal('Árbol Genealógico', 'Visualiza vínculos familiares directos (padres, cónyuge, hijos) en segundos.')" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/60 text-sm font-medium transition-colors">
+                                <i class="fa-solid fa-people-roof w-5 text-center text-red-400"></i>
+                                <span>Árbol Genealógico</span>
+                            </a>
+                            <a href="#" onclick="openServiceModal('Reconocimiento Facial', 'Sistema de cotejo biométrico avanzado por fotografía.')" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/60 text-sm font-medium transition-colors">
+                                <i class="fa-solid fa-face-smile w-5 text-center text-red-400"></i>
+                                <span>Reconocimiento Facial</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Módulo Vehicular y Comercial -->
+                    <div>
+                        <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-3 px-3">Vehicular & Comercial</p>
+                        <div class="space-y-1">
+                            <a href="#" onclick="openServiceModal('SUNARP - Propiedades', 'Consulta de vehículos, predios, poderes y empresas registradas.')" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/60 text-sm font-medium transition-colors">
+                                <i class="fa-solid fa-building-columns w-5 text-center text-blue-400"></i>
+                                <span>SUNARP (Registros)</span>
+                            </a>
+                            <a href="#" onclick="openServiceModal('MTC - Licencias y Placas', 'Verificación de brevete, papeletas pendientes y titular vehicular.')" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/60 text-sm font-medium transition-colors">
+                                <i class="fa-solid fa-car w-5 text-center text-emerald-400"></i>
+                                <span>MTC Vehicular</span>
+                            </a>
+                            <a href="#" onclick="openServiceModal('Sentinel & Riesgo Crediticio', 'Reporte financiero, calificación de riesgo y deudas en el sistema financiero.')" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/60 text-sm font-medium transition-colors">
+                                <i class="fa-solid fa-chart-line w-5 text-center text-amber-400"></i>
+                                <span>Sentinel / SBS</span>
+                            </a>
+                            <a href="#" onclick="openServiceModal('SUNAT - RUC y Tributaria', 'Consulta de empresas, estado tributario, representantes legales y emisión.')" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/60 text-sm font-medium transition-colors">
+                                <i class="fa-solid fa-receipt w-5 text-center text-amber-400"></i>
+                                <span>SUNAT RUC/Empresas</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Módulo Policial y Legal -->
+                    <div>
+                        <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-3 px-3">Policial & Legal</p>
+                        <div class="space-y-1">
+                            <a href="#" onclick="openServiceModal('Antecedentes Policiales y Penales', 'Verificación de requisitorias, antecedentes policiales y penales.')" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/60 text-sm font-medium transition-colors">
+                                <i class="fa-solid fa-shield-virus w-5 text-center text-cyan-400"></i>
+                                <span>PNP Antecedentes</span>
+                            </a>
+                            <a href="#" onclick="openServiceModal('Carpeta Fiscal & Ministerio Público', 'Búsqueda de investigaciones fiscales y procesos en curso.')" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/60 text-sm font-medium transition-colors">
+                                <i class="fa-solid fa-scale-balanced w-5 text-center text-purple-400"></i>
+                                <span>Carpeta Fiscal</span>
+                            </a>
+                            <a href="#" onclick="openServiceModal('Síguelo Plus & Poder Judicial', 'Seguimiento de expedientes judiciales en todas las cortes del país.')" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/60 text-sm font-medium transition-colors">
+                                <i class="fa-solid fa-gavel w-5 text-center text-purple-400"></i>
+                                <span>Poder Judicial</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Herramientas y Utilidades -->
+                    <div>
+                        <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-500 mb-3 px-3">Herramientas & APIs</p>
+                        <div class="space-y-1">
+                            <a href="#" onclick="openServiceModal('API Developers Group Rocket', 'Documentación para integrar consultas automáticas en tus sistemas y ERPs.')" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/60 text-sm font-medium transition-colors">
+                                <i class="fa-solid fa-code w-5 text-center text-emerald-400"></i>
+                                <span>API & Webhooks</span>
+                            </a>
+                            <a href="#" onclick="openServiceModal('Generador de Reportes PDF', 'Exporta fichas con marca de agua y validez oficial para trámites.')" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-300 hover:text-white hover:bg-slate-800/60 text-sm font-medium transition-colors">
+                                <i class="fa-solid fa-file-pdf w-5 text-center text-red-400"></i>
+                                <span>Reportes PDF</span>
+                            </a>
+                        </div>
+                    </div>
+
+                </nav>
+            </div>
+
+            <!-- Sidebar Footer User Status -->
+            <div class="p-4 m-4 rounded-xl bg-slate-800/60 border border-slate-800 flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-9 h-9 rounded-lg bg-green-500/20 text-green-400 flex items-center justify-center font-bold text-xs">
+                        GR
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-white">Modo Invitado</p>
+                        <p class="text-[10px] text-slate-400">Inicia sesión para operar</p>
+                    </div>
+                </div>
+                <button onclick="fillDemoCredentials()" class="text-xs text-green-400 hover:text-green-300 bg-slate-800 p-2 rounded-lg border border-slate-700 transition-all" title="Cargar Demo">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area (Split in two identical to Kmente dashboard) -->
+        <main class="flex-1 flex flex-col lg:flex-row min-h-screen">
+            
+            <!-- Left Panel: Login Box & Authentication -->
+            <div class="w-full lg:w-1/2 flex flex-col justify-between p-6 sm:p-10 lg:p-14 xl:p-16 bg-slate-900 border-r border-slate-800 relative z-10">
+                <!-- Top Bar Mobile Toggle -->
+                <div>
+                    <div class="flex items-center justify-between mb-8">
+                        <button onclick="toggleSidebarMobile()" class="xl:hidden flex items-center space-x-2 text-slate-300 bg-slate-800 px-3 py-2 rounded-xl text-xs font-semibold border border-slate-700">
+                            <i class="fa-solid fa-bars"></i>
+                            <span>Menú de Servicios</span>
+                        </button>
+                        <div class="hidden xl:flex items-center space-x-2 text-xs text-slate-400">
+                            <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                            <span>Servidores Operativos 99.9%</span>
+                        </div>
+                        <div class="flex items-center space-x-2 text-xs text-green-400 font-medium">
+                            <i class="fa-solid fa-shield-halved"></i>
+                            <span>Conexión Cifrada SSL</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-8">
+                        <h1 class="text-3xl font-bold tracking-tight text-white mb-2">Inicia sesión para acceder a tu panel</h1>
+                        <p class="text-sm text-slate-400">Ingresa tus credenciales para consultar datos oficiales en segundos.</p>
+                    </div>
+
+                    <!-- Login Form -->
+                    <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-5">
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Usuario</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+                                    <i class="fa-solid fa-user"></i>
+                                </div>
+                                <input type="text" id="username" required placeholder="Solo letras minúsculas y números, sin espacios" 
+                                    class="w-full pl-11 pr-4 py-3 bg-slate-800/80 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all">
+                            </div>
+                            <p class="text-[11px] text-slate-500 mt-1.5">Solo letras minúsculas y números, sin espacios.</p>
+                        </div>
+
+                        <div>
+                            <div class="flex items-center justify-between mb-2">
+                                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400">Contraseña</label>
+                                <a href="#" onclick="showRecoveryModal(event)" class="text-xs text-green-400 hover:text-green-300 font-medium transition-colors">¿Olvidaste tu contraseña?</a>
+                            </div>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+                                    <i class="fa-solid fa-lock"></i>
+                                </div>
+                                <input type="password" id="password" required placeholder="••••••••••••" 
+                                    class="w-full pl-11 pr-12 py-3 bg-slate-800/80 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/20 transition-all">
+                                <button type="button" onclick="togglePassword()" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-white text-xs font-medium">
+                                    <span id="toggleText">Mostrar</span>
+                                </button>
+                            </div>
+                            <p class="text-[11px] text-slate-500 mt-1.5 flex items-center gap-1"><i class="fa-solid fa-circle-info text-[10px]"></i> Mayúsculas (Caps Lock)</p>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" id="submitBtn" class="w-full py-3.5 px-4 bg-gradient-to-r from-green-600 to-emerald-500 hover:from-green-500 hover:to-emerald-400 text-white font-semibold rounded-xl shadow-lg shadow-green-600/30 hover:shadow-green-500/50 transition-all duration-200 flex items-center justify-center space-x-2 group">
+                            <span>Acceder al Panel</span>
+                            <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                        </button>
+                    </form>
+
+                    <!-- Demo Access Quick Helper -->
+                    <div class="mt-6 p-4 rounded-xl bg-slate-800/40 border border-slate-800">
+                        <p class="text-xs text-slate-400 mb-2 font-medium">¿Deseas probar una demo rápida?</p>
+                        <button onclick="fillDemoCredentials()" class="text-xs bg-slate-800 hover:bg-slate-700 text-green-400 font-medium py-2 px-3 rounded-lg border border-slate-700 transition-all flex items-center gap-2">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> Rellenar con cuenta de prueba Group Rocket
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Footer links -->
+                <div class="pt-8 mt-8 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
+                    <p>© 2026 Group Rocket. Todos los derechos reservados.</p>
+                    <div class="flex space-x-6">
+                        <a href="#" onclick="openServiceModal('Términos y Condiciones', 'Uso exclusivo para profesionales y entidades autorizadas bajo normativa vigente de protección de datos.')" class="hover:text-slate-300 transition-colors">Términos</a>
+                        <a href="#" onclick="openServiceModal('Privacidad y Seguridad', 'Tus consultas están cifradas y respaldadas con estándares de alta seguridad.')" class="hover:text-slate-300 transition-colors">Privacidad</a>
+                        <a href="#" onclick="openServiceModal('Soporte Técnico', 'Contáctanos a través de nuestro botón flotante de WhatsApp o correo soporte@grouprocket.com.')" class="hover:text-slate-300 transition-colors">Soporte</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Official Sources Grid & Highlights -->
+            <div class="w-full lg:w-1/2 bg-slate-950 p-6 sm:p-10 lg:p-14 xl:p-16 flex flex-col justify-between relative overflow-hidden">
+                <!-- Decorative background glow -->
+                <div class="absolute -top-40 -right-40 w-96 h-96 bg-green-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-emerald-600/10 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div class="relative z-10">
+                    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-xs font-semibold mb-6">
+                        <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                        Sistema Multifuente Oficial Integrado
+                    </div>
+                    
+                    <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white mb-4">
+                        Consulta datos en segundos con <span class="bg-gradient-to-r from-green-400 to-emerald-300 bg-clip-text text-transparent">Group Rocket</span>
+                    </h2>
+                    
+                    <p class="text-slate-400 text-sm sm:text-base leading-relaxed mb-8">
+                        Plataforma profesional unificada para la verificación y consulta en tiempo real de registros públicos, entidades del Estado y fuentes oficiales del Perú.
+                    </p>
+
+                    <!-- Official Sources Grid -->
+                    <div class="mb-8">
+                        <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-4">Fuentes oficiales integradas</h3>
+                        
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                            <!-- Source Card 1 -->
+                            <div onclick="openServiceModal('RENIEC - Identidad', 'Acceso directo a fichas demográficas, validación de huellas y nombres.')" class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-slate-700 transition-all flex items-center space-x-3 group cursor-pointer">
+                                <div class="w-10 h-10 rounded-lg bg-red-500/10 text-red-400 flex items-center justify-center font-bold text-sm shrink-0 group-hover:scale-110 transition-transform">
+                                    <i class="fa-solid fa-id-card"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-semibold text-white">RENIEC</h4>
+                                    <p class="text-[11px] text-slate-400">Identidad y DNI</p>
+                                </div>
+                            </div>
+
+                            <!-- Source Card 2 -->
+                            <div onclick="openServiceModal('SUNARP - Registros', 'Consulta de partidas registrales, vehículos y propiedades.')" class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-slate-700 transition-all flex items-center space-x-3 group cursor-pointer">
+                                <div class="w-10 h-10 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center font-bold text-sm shrink-0 group-hover:scale-110 transition-transform">
+                                    <i class="fa-solid fa-building-columns"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-semibold text-white">SUNARP</h4>
+                                    <p class="text-[11px] text-slate-400">Registros Públicos</p>
+                                </div>
+                            </div>
+
+                            <!-- Source Card 3 -->
+                            <div onclick="openServiceModal('SUNAT - RUC', 'Consulta de padrón reducido, representantes y estado de contribuyentes.')" class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-slate-700 transition-all flex items-center space-x-3 group cursor-pointer">
+                                <div class="w-10 h-10 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center font-bold text-sm shrink-0 group-hover:scale-110 transition-transform">
+                                    <i class="fa-solid fa-receipt"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-semibold text-white">SUNAT</h4>
+                                    <p class="text-[11px] text-slate-400">RUC y Tributaria</p>
+                                </div>
+                            </div>
+
+                            <!-- Source Card 4 -->
+                            <div onclick="openServiceModal('MTC - Licencias', 'Consulta de puntos de brevete, papeletas y placas.')" class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-slate-700 transition-all flex items-center space-x-3 group cursor-pointer">
+                                <div class="w-10 h-10 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-bold text-sm shrink-0 group-hover:scale-110 transition-transform">
+                                    <i class="fa-solid fa-car"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-semibold text-white">MTC</h4>
+                                    <p class="text-[11px] text-slate-400">Licencias y Placas</p>
+                                </div>
+                            </div>
+
+                            <!-- Source Card 5 -->
+                            <div onclick="openServiceModal('PNP - Antecedentes', 'Verificación de requisitorias y antecedentes policiales.')" class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-slate-700 transition-all flex items-center space-x-3 group cursor-pointer">
+                                <div class="w-10 h-10 rounded-lg bg-cyan-500/10 text-cyan-400 flex items-center justify-center font-bold text-sm shrink-0 group-hover:scale-110 transition-transform">
+                                    <i class="fa-solid fa-shield-virus"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-semibold text-white">PNP</h4>
+                                    <p class="text-[11px] text-slate-400">Antecedentes</p>
+                                </div>
+                            </div>
+
+                            <!-- Source Card 6 -->
+                            <div onclick="openServiceModal('Fiscalía - Ministerio Público', 'Consulta de carpetas fiscales e investigaciones en curso.')" class="p-4 rounded-xl bg-slate-900/90 border border-slate-800 hover:border-slate-700 transition-all flex items-center space-x-3 group cursor-pointer">
+                                <div class="w-10 h-10 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center font-bold text-sm shrink-0 group-hover:scale-110 transition-transform">
+                                    <i class="fa-solid fa-scale-balanced"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-semibold text-white">Fiscalía</h4>
+                                    <p class="text-[11px] text-slate-400">Ministerio Público</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Feature highlights ticker -->
+                    <div class="grid grid-cols-2 gap-4 pt-4 border-t border-slate-900">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 rounded-lg bg-green-500/10 text-green-400 flex items-center justify-center text-xs">
+                                <i class="fa-solid fa-bolt"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-semibold text-white">Alta Velocidad</p>
+                                <p class="text-[11px] text-slate-500">Resultados en menos de 2s</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 rounded-lg bg-green-500/10 text-green-400 flex items-center justify-center text-xs">
+                                <i class="fa-solid fa-file-pdf"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-semibold text-white">Reportes PDF</p>
+                                <p class="text-[11px] text-slate-500">Listos para exportar</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom Testimonial badge -->
+                <div class="relative z-10 mt-8 p-4 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-center gap-4">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-green-600 to-emerald-400 flex items-center text-white font-bold text-lg justify-center shrink-0">
+                        GR
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-300 italic">“Group Rocket es la plataforma más completa y rápida para nuestras consultas operativas diarias.”</p>
+                        <p class="text-[11px] text-slate-500 mt-1 font-semibold">— Roberto Sánchez, Gerente de Operaciones</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/51999999999?text=Hola,%20deseo%20información%20sobre%20los%20planes%20de%20Group%20Rocket" target="_blank" rel="noopener noreferrer"
+        class="fixed bottom-6 right-6 z-50 w-14 h-14 bg-emerald-500 hover:bg-emerald-600 text-white rounded-full flex items-center justify-center text-2xl shadow-xl shadow-emerald-900/50 transition-all duration-300 hover:scale-110 group"
+        title="Contáctanos por WhatsApp">
+        <i class="fa-brands fa-whatsapp"></i>
+        <span class="absolute right-full mr-3 bg-slate-900 text-white text-xs px-3 py-1.5 rounded-lg shadow-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap border border-slate-700 pointer-events-none">
+            ¡Escríbenos por WhatsApp!
+        </span>
+    </a>
+
+    <!-- Custom Modal for Notifications / Recovery / Services -->
+    <div id="customModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 relative shadow-2xl animate-in fade-in zoom-in duration-200">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div id="modalContent">
+                <!-- Dynamic Content Here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Interactive Logic -->
+    <script>
+        // Toggle mobile sidebar
+        function toggleSidebarMobile() {
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar.classList.contains('-ml-80') || sidebar.style.display === 'none') {
+                sidebar.style.display = 'flex';
+                sidebar.classList.remove('-ml-80');
+            } else {
+                sidebar.style.display = 'none';
+            }
+        }
+
+        // Toggle password visibility
+        function togglePassword() {
+            const pwd = document.getElementById('password');
+            const toggleText = document.getElementById('toggleText');
+            if (pwd.type === 'password') {
+                pwd.type = 'text';
+                toggleText.textContent = 'Ocultar';
+            } else {
+                pwd.type = 'password';
+                toggleText.textContent = 'Mostrar';
+            }
+        }
+
+        // Fill demo credentials
+        function fillDemoCredentials() {
+            document.getElementById('username').value = 'grouprocket_admin';
+            document.getElementById('password').value = 'Rocket2026*Secure';
+            openServiceModal('Credenciales Cargadas', 'Se han colocado datos de prueba en el formulario. Ya puedes hacer clic en "Acceder al Panel".');
+        }
+
+        // Handle Login simulation
+        function handleLogin(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i> Autenticando en Group Rocket...`;
+
+            setTimeout(() => {
+                btn.innerHTML = `<i class="fa-solid fa-check mr-2"></i> ¡Acceso Exitoso!`;
+                btn.classList.remove('from-green-600', 'to-emerald-500');
+                btn.classList.add('bg-blue-600', 'to-blue-500');
+
+                setTimeout(() => {
+                    showDashboardSimulation();
+                }, 800);
+            }, 1200);
+        }
+
+        // Simulate dashboard view upon successful login
+        function showDashboardSimulation() {
+            const modal = document.getElementById('customModal');
+            const content = document.getElementById('modalContent');
+            
+            content.innerHTML = `
+                <div class="text-center py-4">
+                    <div class="w-16 h-16 bg-green-500/20 text-green-400 rounded-2xl flex items-center justify-center text-3xl mx-auto mb-4">
+                        <i class="fa-solid fa-rocket"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-2">¡Bienvenido a Group Rocket Dashboard!</h3>
+                    <p class="text-sm text-slate-400 mb-6">Sesión iniciada correctamente. Redirigiendo al panel central de consultas oficiales...</p>
+                    <div class="w-full bg-slate-800 h-2 rounded-full overflow-hidden mb-4">
+                        <div class="bg-green-500 h-full w-full animate-pulse"></div>
+                    </div>
+                    <button onclick="closeModal()" class="w-full py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-medium rounded-xl text-sm transition-all">
+                        Cerrar y volver al inicio
+                    </button>
+                </div>
+            `;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        // Open service modal from sidebar or cards
+        function openServiceModal(title, description) {
+            const modal = document.getElementById('customModal');
+            const content = document.getElementById('modalContent');
+            
+            content.innerHTML = `
+                <div class="text-left pt-2">
+                    <div class="w-10 h-10 bg-green-500/10 text-green-400 rounded-xl flex items-center justify-center text-lg mb-4">
+                        <i class="fa-solid fa-shield-halved"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">${title}</h3>
+                    <p class="text-sm text-slate-300 mb-6 leading-relaxed">${description}</p>
+                    <div class="bg-slate-800/60 p-3 rounded-xl border border-slate-700 mb-5 text-xs text-slate-400">
+                        <i class="fa-solid fa-circle-info text-green-400 mr-1"></i> Para consultar este servicio es necesario iniciar sesión en tu cuenta Group Rocket.
+                    </div>
+                    <button onclick="closeModal()" class="w-full py-2.5 bg-gradient-to-r from-green-600 to-emerald-500 hover:from-green-500 hover:to-emerald-400 text-white font-semibold rounded-xl text-sm transition-all shadow-lg shadow-green-900/20">
+                        Entendido
+                    </button>
+                </div>
+            `;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        // Show password recovery modal
+        function showRecoveryModal(e) {
+            e.preventDefault();
+            const modal = document.getElementById('customModal');
+            const content = document.getElementById('modalContent');
+            
+            content.innerHTML = `
+                <div class="text-left pt-2">
+                    <div class="w-10 h-10 bg-green-500/10 text-green-400 rounded-xl flex items-center justify-center text-lg mb-4">
+                        <i class="fa-solid fa-key"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-white mb-2">Recuperar Contraseña - Group Rocket</h3>
+                    <p class="text-sm text-slate-400 mb-4">Ingresa tu usuario o correo electrónico registrado para restablecer tus credenciales.</p>
+                    <input type="text" placeholder="Usuario o correo electrónico" class="w-full px-4 py-3 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-green-500 mb-4">
+                    <button onclick="alertRecoverySent()" class="w-full py-2.5 bg-gradient-to-r from-green-600 to-emerald-500 text-white font-semibold rounded-xl text-sm transition-all mb-2">
+                        Enviar Instrucciones
+                    </button>
+                    <button onclick="closeModal()" class="w-full py-2 text-slate-400 hover:text-white text-xs">
+                        Cancelar
+                    </button>
+                </div>
+            `;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        function alertRecoverySent() {
+            openServiceModal('Solicitud Enviada', 'Si el usuario existe en nuestra base de datos, se han enviado las instrucciones de restablecimiento.');
+        }
+
+        // Close modal
+        function closeModal() {
+            const modal = document.getElementById('customModal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
+            
+            const btn = document.getElementById('submitBtn');
+            if(btn.disabled) {
+                btn.disabled = false;
+                btn.innerHTML = `<span>Acceder al Panel</span><i class="fa-solid fa-arrow-right"></i>`;
+                btn.classList.remove('bg-blue-600', 'to-blue-500');
+                btn.classList.add('from-green-600', 'to-emerald-500');
+            }
+        }
+    </script>
+</body>
+</html>
